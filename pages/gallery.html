@@ -143,58 +143,59 @@
   </main>
 
   <!-- Enhanced Photo Detail Modal -->
-  <div id="photo-modal" class="fixed inset-0 modal-backdrop flex items-center justify-center z-50 hidden">
-    <div class="modal-content bg-white max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-      <div class="modal-header flex justify-between items-center">
-        <h3 class="text-xl font-bold text-gray-800 font-display">Photo Details</h3>
-        <button id="close-modal" class="modal-close-button">
-          <i class="fas fa-times"></i>
-        </button>
+  <!-- Enhanced Photo Detail Modal -->
+<div id="photo-modal" class="fixed inset-0 modal-backdrop flex items-center justify-center z-50 hidden">
+  <div class="modal-content bg-white w-[95%] max-w-4xl max-h-[90vh] overflow-hidden flex flex-col rounded-lg">
+    <div class="modal-header flex justify-between items-center p-4 border-b">
+      <h3 class="text-xl font-bold text-gray-800 font-display">Photo Details</h3>
+      <button id="close-modal" class="modal-close-button">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="flex flex-col md:flex-row overflow-auto">
+      <div class="w-full md:w-2/3 modal-image-container p-4">
+        <img id="modal-image" class="modal-image w-full h-auto object-contain max-h-[50vh] md:max-h-[60vh]" src="#" alt="Photo detail">
       </div>
       
-      <div class="flex flex-col md:flex-row overflow-auto">
-        <div class="md:w-2/3 modal-image-container">
-          <img id="modal-image" class="modal-image" src="#" alt="Photo detail">
-        </div>
-        
-        <div class="md:w-1/3 modal-form-container">
-          <form id="photo-details-form">
-            <div class="mb-4">
-              <label for="photo-title" class="form-label">Title</label>
-              <input type="text" id="photo-title" class="form-control" placeholder="Enter a title">
-            </div>
-            
-            <div class="mb-4">
-              <label for="photo-description" class="form-label">Description</label>
-              <textarea id="photo-description" rows="4" class="form-control" placeholder="Enter a description"></textarea>
-            </div>
-            
-            <div class="mb-4">
-              <p class="form-label">Captured On</p>
-              <p id="photo-date" class="text-gray-600 bg-gray-50 p-3 rounded-md"></p>
-            </div>
-            
-            <div class="mb-5">
-              <p class="form-label">File Type</p>
-              <p id="photo-type" class="text-gray-600 bg-gray-50 p-3 rounded-md"></p>
-            </div>
-            
-            <div class="button-group">
-              <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save mr-2"></i> Save Changes
-              </button>
-              <button type="button" id="modal-download" class="btn btn-secondary">
-                <i class="fas fa-download mr-2"></i> Download
-              </button>
-              <button type="button" id="modal-delete" class="btn btn-danger">
-                <i class="fas fa-trash mr-2"></i> Delete
-              </button>
-            </div>
-          </form>
-        </div>
+      <div class="w-full md:w-1/3 modal-form-container p-4">
+        <form id="photo-details-form">
+          <div class="mb-4">
+            <label for="photo-title" class="form-label">Title</label>
+            <input type="text" id="photo-title" class="form-control" placeholder="Enter a title">
+          </div>
+          
+          <div class="mb-4">
+            <label for="photo-description" class="form-label">Description</label>
+            <textarea id="photo-description" rows="4" class="form-control" placeholder="Enter a description"></textarea>
+          </div>
+          
+          <div class="mb-4">
+            <p class="form-label">Captured On</p>
+            <p id="photo-date" class="text-gray-600 bg-gray-50 p-3 rounded-md"></p>
+          </div>
+          
+          <div class="mb-5">
+            <p class="form-label">File Type</p>
+            <p id="photo-type" class="text-gray-600 bg-gray-50 p-3 rounded-md"></p>
+          </div>
+          
+          <div class="button-group flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save mr-2"></i> Save
+            </button>
+            <button type="button" id="modal-download" class="btn btn-secondary">
+              <i class="fas fa-download mr-2"></i> Download
+            </button>
+            <button type="button" id="modal-delete" class="btn btn-danger">
+              <i class="fas fa-trash mr-2"></i> Delete
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+</div>
 
   <footer class="footer">
     <div class="container mx-auto px-4 py-6">
