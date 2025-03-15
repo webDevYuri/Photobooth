@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photobooth - Capture</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/custom.css">
+</head>
+<body class="bg-white">
+<header class="app-header">
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center">
+      <a href="../index.html" class="text-2xl font-bold font-display text-gradient">Photobooth</a>
+      <nav class="hidden md:flex space-x-8">
+        <a href="photobooth.html" class="nav-link active">
+          <i class="fas fa-camera mr-1"></i> Photobooth
+        </a>
+        <a href="gallery.html" class="nav-link">
+          <i class="fas fa-images mr-1"></i> Gallery
+        </a>
+      </nav>
+      <!-- Mobile menu button -->
+      <button class="md:hidden text-gray-700 hover:text-black focus:outline-none" id="mobile-menu-button">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+    
+    <!-- Mobile menu (hidden by default) -->
+    <div class="md:hidden hidden" id="mobile-menu">
+      <div class="flex flex-col space-y-3 mt-4 pb-3 px-2">
+        <a href="photobooth.html" class="text-black font-medium py-2 px-3 rounded-lg bg-gray-100">
+          <i class="fas fa-camera mr-1"></i> Photobooth
+        </a>
+        <a href="gallery.html" class="text-gray-700 hover:text-black font-medium py-2 px-3 rounded-lg hover:bg-gray-50">
+          <i class="fas fa-images mr-1"></i> Gallery
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container mx-auto px-4 py-8">
+  <div class="flex flex-col lg:flex-row gap-6">
+    <!-- Webcam and Controls Section -->
+    <div class="lg:w-2/3">
+      <div class="card p-6 mb-6">
+        <!-- Webcam Container -->
+        <div class="relative mb-6">
+          <div id="webcam-container" class="webcam-container aspect-video flex items-center justify-center">
+            <video id="webcam" class="w-full h-auto hidden rounded-lg" autoplay playsinline></video>
+            <div id="webcam-placeholder" class="text-center p-8">
+              <div class="w-20 h-20 bg-black flex items-center justify-center text-white mx-auto mb-4 rounded-full">
+                <i class="fas fa-camera text-3xl"></i>
+              </div>
+              <p class="text-gray-700 font-medium">Click "Start Camera" to begin</p>
+              <p class="text-gray-500 text-sm mt-2">Make sure your camera is connected and permissions are granted</p>
+            </div>
+            <div id="webcam-error" class="hidden text-center p-8">
+              <div class="w-20 h-20 flex items-center justify-center text-red-500 mx-auto mb-4 rounded-full" style="box-shadow: var(--shadow-md); background-color: white;">
+                <i class="fas fa-exclamation-triangle text-3xl"></i>
+              </div>
+              <p class="text-red-600 font-medium">Camera access denied or not available</p>
+              <p class="text-gray-600 mt-2">Please check your browser permissions and try again</p>
+            </div>
+            <canvas id="canvas" class="hidden absolute top-0 left-0 w-full h-full"></canvas>
+          </div>
+          
+          <!-- Camera Controls -->
+          <div class="flex flex-wrap justify-center mt-6 gap-4">
+            <button id="start-camera" class="btn btn-primary" data-tooltip="Start your camera">
+              <i class="fas fa-video mr-2"></i> Start Camera
+            </button>
+            <button id="capture-photo" class="btn btn-success disabled:opacity-50 disabled:cursor-not-allowed" disabled data-tooltip="Take a photo">
+              <i class="fas fa-camera mr-2"></i> Capture
+            </button>
+          </div>
+        </div>
+        
+        <!-- Processing Status -->
+        <div id="processing-status" class="hidden bg-gray-100 text-gray-800 p-4 mb-4 rounded-lg" style="box-shadow: var(--shadow-sm);">
+          <div class="flex items-center">
+            <div class="loading-spinner mr-3"></div>
+            <span class="font-medium">Processing image, please wait...</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Last Captured Photo -->
+      <div id="last-capture-container" class="hidden card p-6">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4 font-display">Last Captured Photo</h3>
+        <div class="bg-gray-50 p-5 rounded-lg">
+          <div class="flex flex-col md:flex-row gap-6">
+            <div class="md:w-1/2">
+              <img id="last-capture" class="w-full h-auto rounded-lg" style="box-shadow: var(--shadow-md);" src="#" alt="Last captured photo">
+            </div>
+            <div class="md:w-1/2">
+              <div class="mb-4">
+                <label for="photo-title-input" class="form-label">Photo Title</label>
+                <input type="text" id="photo-title-input" class="form-control" placeholder="Enter a title for your photo">
+              </div>
+              <div class="mb-4">
+                <label for="photo-description-input" class="form-label">Description (optional)</label>
+                <textarea id="photo-description-input" class="form-control" rows="3" placeholder="Add a description..."></textarea>
+              </div>
+              <div class="button-group">
+                <button id="save-photo" class="btn btn-primary" data-tooltip="Save to your gallery">
+                  <i class="fas fa-save mr-2"></i> Save to Gallery
+                </button>
+                <button id="share-photo" class="btn btn-secondary" data-tooltip="Share with others">
+                  <i class="fas fa-share-alt mr-2"></i> Share
+                </button>
+                <button id="retake-photo" class="btn btn-danger" data-tooltip="Take another photo">
+                  <i class="fas fa-redo mr-2"></i> Retake
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Session Gallery Section -->
+    <div class="lg:w-1/3">
+      <div class="card p-6 sticky top-24">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-2xl font-bold text-gray-800 font-display">Session Gallery</h2>
+          <button id="save-all" class="btn btn-primary btn-sm disabled:opacity-50 disabled:cursor-not-allowed" disabled data-tooltip="Download all photos">
+            <i class="fas fa-download mr-2"></i> Save All
+          </button>
+        </div>
+        
+        <div id="session-gallery" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+          <div class="text-center py-8 text-gray-500">
+            <div class="w-16 h-16 bg-black flex items-center justify-center text-white mx-auto mb-3 rounded-full">
+              <i class="fas fa-camera text-2xl"></i>
+            </div>
+            <p class="font-medium">No photos captured in this session yet</p>
+            <p class="text-sm text-gray-400 mt-1">Photos you capture will appear here</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Notification -->
+<div id="notification" class="notification notification-success hidden">
+  <i class="fas fa-check-circle mr-3 text-green-500 text-xl"></i>
+  <div>
+    <h4 class="font-medium">Success</h4>
+    <p class="text-sm text-gray-600">Photo saved successfully!</p>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-center">
+      <div class="mb-4 md:mb-0">
+        <h3 class="text-xl text-white font-bold font-display mb-2">Digital Photobooth</h3>
+        <p class="text-gray-300">Capture memories with style</p>
+      </div>
+      <div class="flex space-x-4">
+        <a href="#" class="text-white hover:text-gray-300 transition-colors duration-200">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="#" class="text-white hover:text-gray-300 transition-colors duration-200">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="#" class="text-white hover:text-gray-300 transition-colors duration-200">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="#" class="text-white hover:text-gray-300 transition-colors duration-200">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+    </div>
+    <div class="border-t border-gray-700 mt-6 pt-6 text-center">
+      <p>&copy; 2025 Digital Photobooth. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Mobile menu script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuButton.addEventListener('click', function() {
+      mobileMenu.classList.toggle('hidden');
+      
+      // Change icon based on menu state
+      const icon = mobileMenuButton.querySelector('i');
+      if (mobileMenu.classList.contains('hidden')) {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      } else {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+      }
+    });
+    
+    // Show notification example
+    const showNotification = (type, title, message) => {
+      const notification = document.getElementById('notification');
+      notification.className = `notification notification-${type}`;
+      notification.querySelector('h4').textContent = title;
+      notification.querySelector('p').textContent = message;
+      notification.classList.remove('hidden');
+      
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 3000);
+    };
+  });
+</script>
+
+<!-- App Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photobooth - Gallery</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/custom.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body class="bg-white">
+  <header class="app-header">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center">
+        <a href="../index.html" class="text-2xl font-bold font-display text-gradient">Photobooth</a>
+        <nav class="hidden md:flex space-x-8">
+          <a href="photobooth.html" class="nav-link">
+            <i class="fas fa-camera mr-1"></i> Photobooth
+          </a>
+          <a href="gallery.html" class="nav-link active">
+            <i class="fas fa-images mr-1"></i> Gallery
+          </a>
+        </nav>
+        <!-- Mobile menu button -->
+        <button class="md:hidden text-gray-700 hover:text-black focus:outline-none" id="mobile-menu-button">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+      
+      <!-- Mobile menu (hidden by default) -->
+      <div class="md:hidden hidden" id="mobile-menu">
+        <div class="flex flex-col space-y-3 mt-4 pb-3 px-2">
+          <a href="photobooth.html" class="text-gray-700 hover:text-black font-medium py-2 px-3 rounded-lg hover:bg-gray-50">
+            <i class="fas fa-camera mr-1"></i> Photobooth
+          </a>
+          <a href="gallery.html" class="text-black font-medium py-2 px-3 rounded-lg bg-gray-100">
+            <i class="fas fa-images mr-1"></i> Gallery
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-8">
+    <div class="card p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-display">Photo Gallery</h2>
+      
+      <!-- Search and Filter Controls -->
+      <div class="bg-gray-50 p-5 rounded-lg mb-6">
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="md:w-1/2">
+            <div class="relative">
+              <input type="text" id="search-gallery" class="form-control pl-10" placeholder="Search ...">
+              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400"></i>
+              </div>
+            </div>
+          </div>
+          <div class="md:w-1/2 flex flex-wrap gap-4">
+            <div class="flex-1">
+              <select id="sort-gallery" class="form-control">
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="title">A-Z</option>
+              </select>
+            </div>
+            <div class="flex-1">
+              <select id="filter-type" class="form-control">
+                <option value="all">All</option>
+                <option value="jpg">JPG</option>
+                <option value="png">PNG</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Gallery Controls -->
+      <div class="flex flex-wrap justify-between items-center mb-6">
+        <div class="mb-4 md:mb-0">
+          <span class="text-gray-700 font-medium" id="photo-count">0 photos</span>
+        </div>
+        <div class="button-group">
+          <button id="delete-selected" class="btn btn-danger disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <i class="fas fa-trash"></i>
+          </button>
+          <button id="download-selected" class="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <i class="fas fa-download"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Empty Gallery State -->
+      <div id="empty-gallery" class="empty-state">
+        <div class="w-24 h-24 bg-black rounded-full flex items-center justify-center text-white mx-auto mb-4">
+          <i class="fas fa-images text-4xl"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2 font-display">Your gallery is empty</h3>
+        <p class="text-gray-600 mb-6">Capture some photos in the photobooth to see them here</p>
+        <a href="photobooth.html" class="btn btn-primary">
+          Go to Photobooth <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+      
+      <!-- Gallery Grid -->
+      <div id="gallery-grid" class="photo-grid hidden">
+        <!-- Gallery items will be dynamically inserted here -->
+      </div>
+    </div>
+    
+    <!-- Gallery Tips -->
+    <div class="card p-6 mt-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4 font-display">Gallery Tips</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-search"></i>
+          </div>
+          <h4 class="font-semibold text-gray-800 mb-2">Search & Filter</h4>
+          <p class="text-gray-600">Use the search box to find photos by title or description. Filter by type to narrow down results.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-edit"></i>
+          </div>
+          <h4 class="font-semibold text-gray-800 mb-2">Edit Details</h4>
+          <p class="text-gray-600">Click on any photo to view and edit its title and description.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-share-alt"></i>
+          </div>
+          <h4 class="font-semibold text-gray-800 mb-2">Share & Download</h4>
+          <p class="text-gray-600">Select multiple photos to download as a ZIP file or share individually.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Enhanced Photo Detail Modal -->
+  <div id="photo-modal" class="fixed inset-0 modal-backdrop flex items-center justify-center z-50 hidden">
+    <div class="modal-content bg-white max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div class="modal-header flex justify-between items-center">
+        <h3 class="text-xl font-bold text-gray-800 font-display">Photo Details</h3>
+        <button id="close-modal" class="modal-close-button">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="flex flex-col md:flex-row overflow-auto">
+        <div class="md:w-2/3 modal-image-container">
+          <img id="modal-image" class="modal-image" src="#" alt="Photo detail">
+        </div>
+        
+        <div class="md:w-1/3 modal-form-container">
+          <form id="photo-details-form">
+            <div class="mb-4">
+              <label for="photo-title" class="form-label">Title</label>
+              <input type="text" id="photo-title" class="form-control" placeholder="Enter a title">
+            </div>
+            
+            <div class="mb-4">
+              <label for="photo-description" class="form-label">Description</label>
+              <textarea id="photo-description" rows="4" class="form-control" placeholder="Enter a description"></textarea>
+            </div>
+            
+            <div class="mb-4">
+              <p class="form-label">Captured On</p>
+              <p id="photo-date" class="text-gray-600 bg-gray-50 p-3 rounded-md"></p>
+            </div>
+            
+            <div class="mb-5">
+              <p class="form-label">File Type</p>
+              <p id="photo-type" class="text-gray-600 bg-gray-50 p-3 rounded-md"></p>
+            </div>
+            
+            <div class="button-group">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save mr-2"></i> Save Changes
+              </button>
+              <button type="button" id="modal-download" class="btn btn-secondary">
+                <i class="fas fa-download mr-2"></i> Download
+              </button>
+              <button type="button" id="modal-delete" class="btn btn-danger">
+                <i class="fas fa-trash mr-2"></i> Delete
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container mx-auto px-4 py-6">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <h3 class="text-xl text-white font-bold font-display mb-2">Digital Photobooth</h3>
+          <p class="text-gray-300">Capture memories with style</p>
+        </div>
+        <div class="flex space-x-4">
+          <a href="#" class="text-white hover:text-gray-300 transition-colors duration-200">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" class="text-white hover:text-gray-300 transition-colors duration-200">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#" class="text-white hover:text-gray-300 transition-colors duration-200">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#" class="text-white hover:text-gray-300 transition-colors duration-200">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-6 pt-6 text-center">
+        <p>&copy; 2025 Digital Photobooth. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile menu script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      
+      mobileMenuButton.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+        
+        // Change icon based on menu state
+        const icon = mobileMenuButton.querySelector('i');
+        if (mobileMenu.classList.contains('hidden')) {
+          icon.classList.remove('fa-times');
+          icon.classList.add('fa-bars');
+        } else {
+          icon.classList.remove('fa-bars');
+          icon.classList.add('fa-times');
+        }
+      });
+    });
+  </script>
+
+  <script src="../js/gallery.js"></script>
+</body>
+</html>
+
