@@ -148,14 +148,6 @@
   </div>
 </main>
 
-<!-- Notification -->
-<div id="notification" class="notification notification-success hidden">
-  <i class="fas fa-check-circle mr-3 text-green-500 text-xl"></i>
-  <div>
-    <h4 class="font-medium">Success</h4>
-    <p class="text-sm text-gray-600">Photo saved successfully!</p>
-  </div>
-</div>
 
 <footer class="footer">
   <div class="container mx-auto px-4 py-6">
@@ -204,19 +196,7 @@
         icon.classList.add('fa-times');
       }
     });
-    
-    // Show notification example
-    const showNotification = (type, title, message) => {
-      const notification = document.getElementById('notification');
-      notification.className = `notification notification-${type}`;
-      notification.querySelector('h4').textContent = title;
-      notification.querySelector('p').textContent = message;
-      notification.classList.remove('hidden');
-      
-      setTimeout(() => {
-        notification.classList.add('hidden');
-      }, 3000);
-    };
+
   });
 </script>
 
