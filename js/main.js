@@ -178,41 +178,47 @@ window.photoboothApp = {
   }
   
   // Get camera constraints based on settings
-  function getCameraConstraints() {
-    let width, height
-  
-    switch (window.photoboothApp.settings.cameraResolution) {
-      case "4k":
-        width = 3840
-        height = 2160
-        break
-      case "full-hd":
-        width = 1920
-        height = 1080
-        break
-      case "hd":
-      default:
-        width = 1280
-        height = 720
-        break
-    }
-  
-    // If a specific camera device is selected in settings
-    const deviceId = window.photoboothApp.settings.cameraDevice
-    const videoConstraints = {
-      width: { ideal: width },
-      height: { ideal: height },
-    }
-  
-    if (deviceId) {
-      videoConstraints.deviceId = { exact: deviceId }
-    }
-  
-    return {
-      video: videoConstraints,
-      audio: false,
-    }
+  // Get camera constraints based on settings
+function getCameraConstraints() {
+  let width, height;
+
+  switch (window.photoboothApp.settings.cameraResolution) {
+    case "4k":
+      width = 3840;
+      height = 2160;
+      break;
+    case "full-hd":
+      width = 1920;
+      height = 1080;
+      break;
+    case "hd":
+    default:
+      width = 1280;
+      height = 720;
+      break;
   }
+
+  // Ensure landscape orientation
+  if (window.innerWidth < window.innerHeight) {
+    [width, height] = [height, width];
+  }
+
+  // If a specific camera device is selected in settings
+  const deviceId = window.photoboothApp.settings.cameraDevice;
+  const videoConstraints = {
+    width: { ideal: width },
+    height: { ideal: height },
+  };
+
+  if (deviceId) {
+    videoConstraints.deviceId = { exact: deviceId };
+  }
+
+  return {
+    video: videoConstraints,
+    audio: false,
+  };
+}
   
   // Capture photo from webcam
   function capturePhoto() {
